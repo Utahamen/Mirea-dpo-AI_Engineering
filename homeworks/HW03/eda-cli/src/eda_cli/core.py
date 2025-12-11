@@ -185,15 +185,15 @@ def compute_quality_flags(summary: DatasetSummary, missing_df: pd.DataFrame) -> 
     flags["max_missing_share"] = max_missing_share
     flags["too_many_missing"] = max_missing_share > 0.5
 
-    # 1) Колонки с константными значениями
+
     constant_cols = [
         col.name for col in summary.columns
-        if col.unique <= 1  # 1 уникальное значение или вообще нет данных
+        if col.unique <= 1  
     ]
     flags["has_constant_columns"] = len(constant_cols) > 0
     flags["constant_columns"] = constant_cols
 
-    # 2) Большая доля нулей в числовых колонках
+
     zero_cols = [
         col.name for col in summary.columns
         if col.is_numeric and col.min == 0 and col.max == 0
