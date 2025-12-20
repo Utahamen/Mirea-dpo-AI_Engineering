@@ -1,0 +1,16 @@
+﻿Признак,Выбросов (IQR),% выбросов (IQR)
+age,0,0.00%
+income,18,0.60%
+years_employed,0,0.00%
+credit_score,25,0.83%
+debt_to_income,18,0.60%
+num_credit_cards,0,0.00%
+num_late_payments,0,0.00%
+has_mortgage,0,0.00%
+has_car_loan,0,0.00%
+savings_balance,15,0.50%
+checking_balance,8,0.27%
+region_risk_score,0,0.00%
+phone_calls_to_support_last_3m,0,0.00%
+active_loans,0,0.00%
+customer_tenure_years,0,0.00%

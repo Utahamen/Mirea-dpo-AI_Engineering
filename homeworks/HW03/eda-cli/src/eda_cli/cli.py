@@ -148,7 +148,17 @@ def report(
         f.write(f"- Макс. доля пропусков по колонке: **{quality_flags['max_missing_share']:.2%}**\n")
         f.write(f"- Слишком мало строк: **{quality_flags['too_few_rows']}**\n")
         f.write(f"- Слишком много колонок: **{quality_flags['too_many_columns']}**\n")
-        f.write(f"- Слишком много пропусков: **{quality_flags['too_many_missing']}**\n\n")
+        f.write(f"- Слишком много пропусков: **{quality_flags['too_many_missing']}**\n")
+        f.write(f"- Есть константные колонки: **{quality_flags['has_constant_columns']}**\n")
+        f.write(
+            "- Список константных колонок: "
+            f"**{', '.join(quality_flags['constant_columns']) if quality_flags['constant_columns'] else 'нет'}**\n"
+        )
+        f.write(f"- Есть числовые колонки только из нулей: **{quality_flags['has_many_zero_values']}**\n")
+        f.write(
+            "- Список колонок только из нулей: "
+            f"**{', '.join(quality_flags['zero_value_columns']) if quality_flags['zero_value_columns'] else 'нет'}**\n\n"
+        )
 
         f.write("## Колонки\n\n")
         f.write("См. файл `summary.csv`.\n\n")
