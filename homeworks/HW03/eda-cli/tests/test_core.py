@@ -46,6 +46,13 @@ def test_missing_table_and_quality_flags():
     summary = summarize_dataset(df)
     flags = compute_quality_flags(summary, missing_df)
     assert 0.0 <= flags["quality_score"] <= 1.0
+    # Проверка базовых эвристик
+    assert "too_few_rows" in flags
+    assert "too_many_columns" in flags
+    assert "max_missing_share" in flags
+    assert "too_many_missing" in flags
+    assert flags["too_few_rows"] is True  # 4 строки < 100
+    assert flags["too_many_columns"] is False  # 3 колонки < 100
 
 
 def test_correlation_and_top_categories():
@@ -99,3 +106,77 @@ def test_top_categories_top_k_parameter():
     # Тест 5: проверяем, что share суммируется корректно
     total_share = category_table_3["share"].sum()
     assert abs(total_share - 1.0) < 1e-6, f"Сумма долей должна быть равна 1.0, получено {total_share}"
+
+
+def test_quality_flags_constant_columns():
+    """Тест проверяет эвристику обнаружения константных колонок."""
+    # DataFrame с константной колонкой (все значения одинаковые)
+    df = pd.DataFrame(
+        {
+            "constant_col": [1, 1, 1, 1],
+            "normal_col": [1, 2, 3, 4],
+            "another_constant": ["A", "A", "A", "A"],
+        }
+    )
+    summary = summarize_dataset(df)
+    missing_df = missing_table(df)
+    flags = compute_quality_flags(summary, missing_df)
+    
+    assert "has_constant_columns" in flags
+    assert flags["has_constant_columns"] is True
+    assert "constant_columns" in flags
+    assert "constant_col" in flags["constant_columns"]
+    assert "another_constant" in flags["constant_columns"]
+    assert "normal_col" not in flags["constant_columns"]
+
+
+def test_quality_flags_zero_value_columns():
+    """Тест проверяет эвристику обнаружения колонок с нулевыми значениями."""
+    # DataFrame с числовой колонкой, где все значения равны нулю
+    df = pd.DataFrame(
+        {
+            "zero_col": [0, 0, 0, 0],
+            "normal_col": [1, 2, 3, 4],
+            "mixed_col": [0, 1, 0, 2],  # не все нули
+        }
+    )
+    summary = summarize_dataset(df)
+    missing_df = missing_table(df)
+    flags = compute_quality_flags(summary, missing_df)
+    
+    assert "has_many_zero_values" in flags
+    assert flags["has_many_zero_values"] is True
+    assert "zero_value_columns" in flags
+    assert "zero_col" in flags["zero_value_columns"]
+    assert "normal_col" not in flags["zero_value_columns"]
+    assert "mixed_col" not in flags["zero_value_columns"]
+
+
+def test_quality_flags_too_many_missing():
+    """Тест проверяет эвристику обнаружения большого количества пропусков."""
+    # DataFrame где более 50% значений пропущено в одной колонке
+    df = pd.DataFrame(
+        {
+            "high_missing": [1, None, None, None, None, None],  # 5/6 = 83% пропусков
+            "low_missing": [1, 2, 3, None, 5, 6],  # 1/6 = 17% пропусков
+        }
+    )
+    summary = summarize_dataset(df)
+    missing_df = missing_table(df)
+    flags = compute_quality_flags(summary, missing_df)
+    
+    assert "too_many_missing" in flags
+    assert flags["too_many_missing"] is True
+    assert flags["max_missing_share"] > 0.5
+
+
+def test_quality_flags_too_many_columns():
+    """Тест проверяет эвристику обнаружения слишком большого количества колонок."""
+    # DataFrame с более чем 100 колонками
+    df = pd.DataFrame({f"col_{i}": [1, 2, 3] for i in range(101)})
+    summary = summarize_dataset(df)
+    missing_df = missing_table(df)
+    flags = compute_quality_flags(summary, missing_df)
+    
+    assert flags["too_many_columns"] is True
+    assert summary.n_cols > 100
