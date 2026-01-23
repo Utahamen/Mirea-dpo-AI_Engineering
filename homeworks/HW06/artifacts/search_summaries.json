@@ -14,7 +14,7 @@
       "min_samples_leaf": 2,
       "n_estimators": 200
     },
-    "best_cv_score": 0.9283297272866455
+    "best_cv_score": 0.9283298516805848
   },
   "GradientBoosting": {
     "best_params": {
@@ -23,6 +23,6 @@
       "min_samples_leaf": 2,
       "n_estimators": 200
     },
-    "best_cv_score": 0.932344839893049
+    "best_cv_score": 0.9323196843481041
   }
 }
