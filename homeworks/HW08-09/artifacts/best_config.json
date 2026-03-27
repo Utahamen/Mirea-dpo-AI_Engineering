@@ -1,0 +1,15 @@
+{
+  "dataset": "CIFAR10",
+  "seed": 42,
+  "hidden_sizes": [
+    256,
+    128
+  ],
+  "dropout_p": 0.0,
+  "use_batchnorm": true,
+  "optimizer": "Adam",
+  "lr": 0.001,
+  "epochs_trained": 15,
+  "best_val_accuracy": 0.5169,
+  "best_val_loss": 1.4609640587734272
+}
