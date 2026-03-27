@@ -1,0 +1,13 @@
+{
+  "seed": 42,
+  "window_size": 24,
+  "horizon": 1,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "batch_size": 64,
+  "epochs": 25,
+  "optimizer": "Adam",
+  "lr": 0.001,
+  "scaler": "StandardScaler(target)",
+  "device": "cuda"
+}
